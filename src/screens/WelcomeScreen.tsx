@@ -25,7 +25,16 @@ const WelcomeScreen = ({ navigation }: any) => {
       Alert.alert('Success', 'Registration successful! Please login.');
       setIsRegistering(false);
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Registration failed');
+      console.error('Registration Error:', error);
+      if (error.response) {
+        console.error('Response Data:', error.response.data);
+        console.error('Response Status:', error.response.status);
+      } else if (error.request) {
+        console.error('Request Error (No Response):', error.request);
+      } else {
+        console.error('Error Message:', error.message);
+      }
+      Alert.alert('Error', error.response?.data?.message || `Registration failed: ${error.message}`);
     }
   };
 
