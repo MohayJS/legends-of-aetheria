@@ -6,6 +6,10 @@ import MainMenuScreen from '../screens/MainMenuScreen';
 import GachaScreen from '../screens/GachaScreen';
 import InventoryScreen from '../screens/InventoryScreen';
 import TeamScreen from '../screens/TeamScreen';
+import AdminScreen from '../screens/AdminScreen';
+import ManageItemsScreen from '../screens/ManageItemsScreen';
+import ManageBannersScreen from '../screens/ManageBannersScreen';
+import ManageBannerItemsScreen from '../screens/ManageBannerItemsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +22,10 @@ const AppNavigator = () => {
         <Stack.Screen name="Gacha" component={GachaScreen} />
         <Stack.Screen name="Inventory" component={InventoryScreen} />
         <Stack.Screen name="Team" component={TeamScreen} />
+        <Stack.Screen name="Admin" component={AdminScreen} />
+        <Stack.Screen name="ManageItems" component={ManageItemsScreen} />
+        <Stack.Screen name="ManageBanners" component={ManageBannersScreen} />
+        <Stack.Screen name="ManageBannerItems" component={ManageBannerItemsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -24,7 +24,11 @@ const WelcomeScreen = ({ navigation }: any) => {
       // Send email instead of username for login
       const response = await api.post('/auth/login', { email, password });
       if (response.data.user) {
-        navigation.replace('MainMenu', { user: response.data.user });
+        if (response.data.user.username === 'admin') {
+          navigation.replace('Admin');
+        } else {
+          navigation.replace('MainMenu', { user: response.data.user });
+        }
       }
     } catch (error: any) {
       console.error('Login Error:', error);
