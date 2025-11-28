@@ -6,35 +6,40 @@ const WelcomeScreen = ({ navigation }: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+
+  const getErrorMessage = (error: any) => {
+    if (error.response?.data?.error) {
+      return error.response.data.error;
+    }
+    if (error.response?.data?.message) {
+      return error.response.data.message;
+    }
+    return error.message || 'An unknown error occurred';
+  };
 
   const handleLogin = async () => {
     try {
-      const response = await api.post('/auth/login', { username, password });
+      // Send email instead of username for login
+      const response = await api.post('/auth/login', { email, password });
       if (response.data.user) {
         navigation.replace('MainMenu', { user: response.data.user });
       }
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Login failed');
+      console.error('Login Error:', error);
+      Alert.alert('Login Failed', getErrorMessage(error));
     }
   };
 
   const handleRegister = async () => {
     try {
-      await api.post('/auth/register', { username, password, email });
+      await api.post('/auth/register', { username, password, email, name });
       Alert.alert('Success', 'Registration successful! Please login.');
       setIsRegistering(false);
     } catch (error: any) {
       console.error('Registration Error:', error);
-      if (error.response) {
-        console.error('Response Data:', error.response.data);
-        console.error('Response Status:', error.response.status);
-      } else if (error.request) {
-        console.error('Request Error (No Response):', error.request);
-      } else {
-        console.error('Error Message:', error.message);
-      }
-      Alert.alert('Error', error.response?.data?.message || `Registration failed: ${error.message}`);
+      Alert.alert('Registration Failed', getErrorMessage(error));
     }
   };
 
@@ -49,27 +54,38 @@ const WelcomeScreen = ({ navigation }: any) => {
           <Text style={styles.title}>Legends of Aetheria</Text>
           
           <View style={styles.form}>
-            <Text style={styles.label}>Username</Text>
-            <TextInput 
-              style={styles.input} 
-              value={username} 
-              onChangeText={setUsername}
-              placeholder="Enter username"
-              placeholderTextColor="#888"
-            />
-
+            {/* Show Username only for Register */}
             {isRegistering && (
               <>
-                <Text style={styles.label}>Email</Text>
+                <Text style={styles.label}>Name</Text>
                 <TextInput 
                   style={styles.input} 
-                  value={email} 
-                  onChangeText={setEmail}
-                  placeholder="Enter email"
+                  value={name} 
+                  onChangeText={setName}
+                  placeholder="Enter your name"
+                  placeholderTextColor="#888"
+                />
+
+                <Text style={styles.label}>Username</Text>
+                <TextInput 
+                  style={styles.input} 
+                  value={username} 
+                  onChangeText={setUsername}
+                  placeholder="Enter username"
                   placeholderTextColor="#888"
                 />
               </>
             )}
+
+            {/* Always show Email/Username (Login needs it now) */}
+            <Text style={styles.label}>Username or Email</Text>
+            <TextInput 
+              style={styles.input} 
+              value={email} 
+              onChangeText={setEmail}
+              placeholder="Enter username or email"
+              placeholderTextColor="#888"
+            />
 
             <Text style={styles.label}>Password</Text>
             <TextInput 
