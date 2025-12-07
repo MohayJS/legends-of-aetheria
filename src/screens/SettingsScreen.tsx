@@ -4,38 +4,38 @@ import api from '../services/api';
 
 const SettingsScreen = ({ navigation, route }: any) => {
   const { user } = route.params;
-  const [username, setUsername] = useState(user.username);
+  const [name, setName] = useState(user.name || '');
   const [loading, setLoading] = useState(false);
 
   const handleUpdateName = async () => {
-    if (!username.trim()) {
-      Alert.alert('Error', 'Username cannot be empty');
+    if (!name.trim()) {
+      Alert.alert('Error', 'Name cannot be empty');
       return;
     }
 
-    if (username === user.username) {
-        Alert.alert('Info', 'Username is the same');
+    if (name === user.name) {
+        Alert.alert('Info', 'Name is the same');
         return;
     }
 
     setLoading(true);
     try {
-      const response = await api.post('/player/update-username', {
+      const response = await api.post('/player/update-name', {
         userId: user.id || user.player_id, // Handle both cases if inconsistent
-        newUsername: username,
+        newName: name,
       });
 
-      Alert.alert('Success', 'Username updated successfully');
+      Alert.alert('Success', 'Name updated successfully');
       // Update local user object and navigate back or stay
       // Ideally we should update the global state or pass it back
-      const updatedUser = { ...user, username: username };
+      const updatedUser = { ...user, name: name };
       navigation.setParams({ user: updatedUser });
       // Also update the previous screen params if possible, or just rely on re-fetching
       // For now, let's just update the local state and maybe navigate back with new params
       navigation.navigate('MainMenu', { user: updatedUser });
     } catch (error: any) {
       console.error(error);
-      Alert.alert('Error', error.response?.data?.message || 'Failed to update username');
+      Alert.alert('Error', error.response?.data?.message || 'Failed to update name');
     } finally {
       setLoading(false);
     }
@@ -60,12 +60,12 @@ const SettingsScreen = ({ navigation, route }: any) => {
           <Text style={styles.title}>Settings</Text>
 
           <View style={styles.formContainer}>
-            <Text style={styles.label}>Change Username</Text>
+            <Text style={styles.label}>Change Name</Text>
             <TextInput
               style={styles.input}
-              value={username}
-              onChangeText={setUsername}
-              placeholder="Enter new username"
+              value={name}
+              onChangeText={setName}
+              placeholder="Enter new name"
               placeholderTextColor="#9ca3af"
             />
             <TouchableOpacity 

@@ -54,65 +54,85 @@ const WelcomeScreen = ({ navigation }: any) => {
         style={styles.background}
       >
         <View style={styles.content}>
-          <Text style={styles.title}></Text>
-          
           <View style={styles.form}>
-            {/* Show Username only for Register */}
-            {isRegistering && (
+            {isRegistering ? (
               <>
-                <Text style={styles.label}>Name</Text>
                 <TextInput 
                   style={styles.input} 
                   value={name} 
                   onChangeText={setName}
-                  placeholder="Enter your name"
-                  placeholderTextColor="#888"
+                  placeholder="NAME"
+                  placeholderTextColor="#666"
                 />
-
-                <Text style={styles.label}>Username</Text>
                 <TextInput 
                   style={styles.input} 
                   value={username} 
                   onChangeText={setUsername}
-                  placeholder="Enter username"
-                  placeholderTextColor="#888"
+                  placeholder="USERNAME"
+                  placeholderTextColor="#666"
                 />
+                <TextInput 
+                  style={styles.input} 
+                  value={email} 
+                  onChangeText={setEmail}
+                  placeholder="EMAIL"
+                  placeholderTextColor="#666"
+                />
+                <TextInput 
+                  style={styles.input} 
+                  value={password} 
+                  onChangeText={setPassword}
+                  placeholder="PASSWORD"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                />
+                <TouchableOpacity 
+                  style={[styles.loginButton, { width: '100%', marginTop: 10 }]} 
+                  onPress={handleRegister}
+                >
+                  <Text style={styles.loginButtonText}>REGISTER</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.sideButton, { width: '100%', marginTop: 10 }]} 
+                  onPress={() => setIsRegistering(false)}
+                >
+                  <Text style={styles.sideButtonText}>BACK TO LOGIN</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <TextInput 
+                  style={styles.input} 
+                  value={email} 
+                  onChangeText={setEmail}
+                  placeholder="USERNAME"
+                  placeholderTextColor="#666"
+                />
+
+                <TextInput 
+                  style={styles.input} 
+                  value={password} 
+                  onChangeText={setPassword}
+                  placeholder="PASSWORD"
+                  placeholderTextColor="#666"
+                  secureTextEntry
+                />
+
+                <TouchableOpacity 
+                  style={[styles.loginButton, { width: '100%' }]} 
+                  onPress={handleLogin}
+                >
+                  <Text style={styles.loginButtonText}>LOG IN</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.smallRegisterButton} 
+                  onPress={() => setIsRegistering(true)}
+                >
+                  <Text style={styles.smallRegisterButtonText}>Register</Text>
+                </TouchableOpacity>
               </>
             )}
-
-            {/* Always show Email/Username (Login needs it now) */}
-            <Text style={styles.label}>Email</Text>
-            <TextInput 
-              style={styles.input} 
-              value={email} 
-              onChangeText={setEmail}
-              placeholder="Enter email"
-              placeholderTextColor="#888"
-            />
-
-            <Text style={styles.label}>Password</Text>
-            <TextInput 
-              style={styles.input} 
-              value={password} 
-              onChangeText={setPassword}
-              placeholder="Enter password"
-              placeholderTextColor="#888"
-              secureTextEntry
-            />
-
-            <TouchableOpacity 
-              style={[styles.button, styles.primaryButton]} 
-              onPress={isRegistering ? handleRegister : handleLogin}
-            >
-              <Text style={styles.buttonText}>{isRegistering ? 'Register' : 'Login'}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.button, styles.secondaryButton]} 
-              onPress={() => setIsRegistering(!isRegistering)}
-            >
-              <Text style={styles.buttonText}>{isRegistering ? 'Back to Login' : 'Create Account'}</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ImageBackground>
@@ -132,54 +152,83 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   title: {
     fontSize: 40,
     color: '#fde047',
     fontWeight: 'bold',
     marginBottom: 40,
-    textShadowColor: '#4338ca',
-    textShadowOffset: { width: 4, height: 4 },
-    textShadowRadius: 0,
     textAlign: 'center',
+    display: 'none',
   },
   form: {
     width: '100%',
     maxWidth: 400,
-  },
-  label: {
-    color: '#e5e7eb',
-    fontSize: 18,
-    marginBottom: 8,
-    fontWeight: 'bold',
+    alignItems: 'center',
   },
   input: {
-    backgroundColor: '#192233',
+    backgroundColor: '#FFF8DC',
     borderWidth: 4,
-    borderColor: '#92a4c9',
-    color: 'white',
-    padding: 15,
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  button: {
-    padding: 15,
-    alignItems: 'center',
+    borderColor: '#2d1b4e',
+    color: '#000',
+    padding: 12,
+    fontSize: 16,
     marginBottom: 15,
-    borderWidth: 4,
-    borderColor: 'white',
-  },
-  primaryButton: {
-    backgroundColor: '#fde047',
-    borderColor: '#4338ca',
-  },
-  secondaryButton: {
-    backgroundColor: '#15803d',
-  },
-  buttonText: {
-    fontSize: 20,
+    width: '100%',
     fontWeight: 'bold',
-    color: '#1e1b4b',
+  },
+  smallRegisterButton: {
+    marginTop: 15,
+    padding: 10,
+  },
+  smallRegisterButtonText: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
+  loginButton: {
+    backgroundColor: '#6A4C93',
+    borderWidth: 4,
+    borderColor: '#2d1b4e',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '40%',
+    borderBottomWidth: 6,
+    borderRightWidth: 6,
+  },
+  sideButton: {
+    backgroundColor: '#6A4C93',
+    borderWidth: 3,
+    borderColor: '#2d1b4e',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '28%',
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+  },
+  loginButtonText: {
+    color: '#4CAF50',
+    fontSize: 22,
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 0,
+  },
+  sideButtonText: {
+    color: '#FFD700',
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
   },
 });
 

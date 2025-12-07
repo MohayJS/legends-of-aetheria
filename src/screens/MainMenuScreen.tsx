@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView, SafeAreaView } from 'react-native';
 
 const MainMenuScreen = ({ navigation, route }: any) => {
   // Fallback for user if not passed correctly
-  const user = route.params?.user || { username: 'BladeMaster', level: 10 };
+  const [user, setUser] = useState(route.params?.user || { name: 'BladeMaster', username: 'BladeMaster', level: 10, gems: 1500 });
+
+  useEffect(() => {
+    if (route.params?.user) {
+      setUser(route.params.user);
+    }
+  }, [route.params?.user]);
 
   return (
     <ImageBackground 
@@ -24,7 +30,7 @@ const MainMenuScreen = ({ navigation, route }: any) => {
                 />
               </View>
               <View style={styles.userInfo}>
-                <Text style={styles.username}>{user.username}</Text>
+                <Text style={styles.username}>{user.name || user.username}</Text>
                 <View style={styles.levelContainer}>
                   <Text style={styles.levelText}>Lvl {user.level || 10}</Text>
                   <View style={styles.xpBarBackground}>
@@ -37,16 +43,8 @@ const MainMenuScreen = ({ navigation, route }: any) => {
             {/* Currency Stats */}
             <View style={styles.currencyContainer}>
               <View style={styles.currencyItem}>
-                <Text style={styles.currencyIcon}>💎</Text>
-                <Text style={styles.currencyText}>1500</Text>
-              </View>
-              <View style={styles.currencyItem}>
-                <Text style={styles.currencyIcon}>🪙</Text>
-                <Text style={styles.currencyText}>125k</Text>
-              </View>
-              <View style={styles.currencyItem}>
-                <Text style={styles.currencyIcon}>🎫</Text>
-                <Text style={styles.currencyText}>300</Text>
+                <Image source={require('../../srcassets/gems/single_gem.png')} style={styles.currencyIconImage} />
+                <Text style={styles.currencyText}>{user.gems !== undefined ? user.gems : 1500}</Text>
               </View>
             </View>
           </View>
@@ -119,7 +117,7 @@ const MainMenuScreen = ({ navigation, route }: any) => {
                 <Text style={styles.secondaryIcon}>📜</Text>
                 <Text style={styles.secondaryText}>Quests</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.secondaryButton}>
+              <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Shop', { user })}>
                 <Text style={styles.secondaryIcon}>🏪</Text>
                 <Text style={styles.secondaryText}>Shop</Text>
               </TouchableOpacity>
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
   },
   currencyContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     gap: 8,
   },
   currencyItem: {
@@ -226,6 +224,12 @@ const styles = StyleSheet.create({
   currencyIcon: {
     fontSize: 16,
     marginRight: 8,
+  },
+  currencyIconImage: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    resizeMode: 'contain',
   },
   currencyText: {
     color: '#fde047',
