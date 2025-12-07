@@ -82,12 +82,12 @@ const WelcomeScreen = ({ navigation }: any) => {
             )}
 
             {/* Always show Email/Username (Login needs it now) */}
-            <Text style={styles.label}>Username or Email</Text>
+            <Text style={styles.label}>Email</Text>
             <TextInput 
               style={styles.input} 
               value={email} 
               onChangeText={setEmail}
-              placeholder="Enter username or email"
+              placeholder="Enter email"
               placeholderTextColor="#888"
             />
 

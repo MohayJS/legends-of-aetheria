@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView, SafeAreaView, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView, SafeAreaView } from 'react-native';
 
 const MainMenuScreen = ({ navigation, route }: any) => {
   // Fallback for user if not passed correctly
