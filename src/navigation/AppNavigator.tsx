@@ -10,6 +10,7 @@ import AdminScreen from '../screens/AdminScreen';
 import ManageItemsScreen from '../screens/ManageItemsScreen';
 import ManageBannersScreen from '../screens/ManageBannersScreen';
 import ManageBannerItemsScreen from '../screens/ManageBannerItemsScreen';
+import ListItemsScreen from '../screens/ListItemsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ShopScreen from '../screens/ShopScreen';
 
@@ -28,6 +29,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ManageItems" component={ManageItemsScreen} />
         <Stack.Screen name="ManageBanners" component={ManageBannersScreen} />
         <Stack.Screen name="ManageBannerItems" component={ManageBannerItemsScreen} />
+        <Stack.Screen name="ListItems" component={ListItemsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="Shop" component={ShopScreen} />
       </Stack.Navigator>

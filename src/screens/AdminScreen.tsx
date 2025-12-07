@@ -16,7 +16,14 @@ const AdminScreen = ({ navigation }: any) => {
             style={styles.button} 
             onPress={() => navigation.navigate('ManageItems')}
           >
-            <Text style={styles.buttonText}>Manage Items</Text>
+            <Text style={styles.buttonText}>Add Items</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => navigation.navigate('ListItems')}
+          >
+            <Text style={styles.buttonText}>List Items</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
