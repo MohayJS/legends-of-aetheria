@@ -50,12 +50,11 @@ const WelcomeScreen = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <ImageBackground 
-        source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD6yjgH45QXimuclDoHZJ4nErfeeT8o2QPErhshzH7JBzv3LvFxqfbDBDBoZxdtI_TIwyTixVTYOHIVHK-e3AJ3wNFxxXbZGgbzVXER6S8u7MMO_lJx2krXlJbyuij6lhzo4bTgvThKZrGtdK5KlmJMnnlRj5QuhwuoTA9clmoqZgMnCv-kmrVITT-ZXgscW2ruQ9pN15Oa9eSfwTjYV3pSTLn30tvaYAbxmkVQYsnBS0UV3tqudvHnqbpVelLxiA9MeuqAu6HgdUe6' }} 
+        source={require('../../srcassets/login_screen.png')} 
         style={styles.background}
-        imageStyle={{ opacity: 0.5 }}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>Legends of Aetheria</Text>
+          <Text style={styles.title}></Text>
           
           <View style={styles.form}>
             {/* Show Username only for Register */}

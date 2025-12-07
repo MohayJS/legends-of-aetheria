@@ -10,6 +10,7 @@ import AdminScreen from '../screens/AdminScreen';
 import ManageItemsScreen from '../screens/ManageItemsScreen';
 import ManageBannersScreen from '../screens/ManageBannersScreen';
 import ManageBannerItemsScreen from '../screens/ManageBannerItemsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ManageItems" component={ManageItemsScreen} />
         <Stack.Screen name="ManageBanners" component={ManageBannersScreen} />
         <Stack.Screen name="ManageBannerItems" component={ManageBannerItemsScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -123,7 +123,7 @@ const MainMenuScreen = ({ navigation, route }: any) => {
                 <Text style={styles.secondaryIcon}>🏪</Text>
                 <Text style={styles.secondaryText}>Shop</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.secondaryButton}>
+              <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Settings', { user })}>
                 <Text style={styles.secondaryIcon}>⚙️</Text>
                 <Text style={styles.secondaryText}>Settings</Text>
               </TouchableOpacity>
