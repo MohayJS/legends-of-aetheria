@@ -11,7 +11,7 @@ const InventoryScreen = () => {
 
   const fetchInventory = async () => {
     try {
-      const playerId = 1; // Hardcoded for MVP
+      const playerId = 5; // Hardcoded for MVP
       const response = await api.get(`/inventory/${playerId}`);
       setInventory(response.data);
     } catch (error) {

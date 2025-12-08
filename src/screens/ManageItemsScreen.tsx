@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import api from '../services/api';
 
 import PixelSelect from '../components/PixelSelect';
@@ -18,15 +18,67 @@ const ManageItemsScreen = () => {
   const [spd, setSpd] = useState('');
   const [critRate, setCritRate] = useState('');
 
+  useEffect(() => {
+    const fillStats = () => {
+      let newHp = '';
+      let newAtk = '';
+      let newDef = '';
+      let newSpd = '';
+      let newCritRate = '';
+
+      if (type === 'Character') {
+        switch (rarity) {
+          case 'Common': newHp = '100'; newAtk = '10'; newDef = '5'; newSpd = '10'; break;
+          case 'Rare': newHp = '200'; newAtk = '20'; newDef = '10'; newSpd = '12'; break;
+          case 'Epic': newHp = '500'; newAtk = '50'; newDef = '25'; newSpd = '15'; break;
+          case 'Legendary': newHp = '1000'; newAtk = '100'; newDef = '50'; newSpd = '20'; break;
+        }
+      } else if (type === 'Weapon') {
+        switch (rarity) {
+          case 'Common': newAtk = '10'; newCritRate = '0.01'; break;
+          case 'Rare': newAtk = '30'; newCritRate = '0.05'; break;
+          case 'Epic': newAtk = '80'; newCritRate = '0.10'; break;
+          case 'Legendary': newAtk = '150'; newCritRate = '0.20'; break;
+        }
+      } else if (type === 'Equipment') {
+        switch (rarity) {
+          case 'Common': newHp = '50'; newDef = '5'; break;
+          case 'Rare': newHp = '100'; newDef = '10'; break;
+          case 'Epic': newHp = '250'; newDef = '25'; break;
+          case 'Legendary': newHp = '500'; newDef = '50'; break;
+        }
+      }
+
+      setHp(newHp);
+      setAtk(newAtk);
+      setDef(newDef);
+      setSpd(newSpd);
+      setCritRate(newCritRate);
+    };
+
+    fillStats();
+  }, [rarity, type]);
+
   const handleAddItem = async () => {
     let baseStats = {};
 
     if (type === 'Character') {
-      baseStats = { hp: parseInt(hp), atk: parseInt(atk), def: parseInt(def), spd: parseInt(spd) };
+      baseStats = { 
+        hp: parseInt(hp, 10), 
+        atk: parseInt(atk, 10), 
+        def: parseInt(def, 10), 
+        spd: parseInt(spd, 10) 
+      };
     } else if (type === 'Weapon') {
-      baseStats = { atk: parseInt(atk), critRate: parseFloat(critRate) };
+      baseStats = { 
+        atk: parseInt(atk, 10), 
+        critRate: parseFloat(critRate) 
+      };
     } else if (type === 'Equipment') {
-      baseStats = { hp: parseInt(hp), def: parseInt(def) };
+      baseStats = { 
+        hp: parseInt(hp, 10), 
+        def: parseInt(def, 10) 
+      };
     }
 
     try {
@@ -42,12 +94,6 @@ const ManageItemsScreen = () => {
       // Reset form
       setName('');
       setDescription('');
-      setImagePath('');
-      setHp('');
-      setAtk('');
-      setDef('');
-      setSpd('');
-      setCritRate('');
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.error || 'Failed to add item');
     }

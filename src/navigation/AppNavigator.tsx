@@ -6,6 +6,7 @@ import MainMenuScreen from '../screens/MainMenuScreen';
 import GachaScreen from '../screens/GachaScreen';
 import InventoryScreen from '../screens/InventoryScreen';
 import TeamScreen from '../screens/TeamScreen';
+import TeamListScreen from '../screens/TeamListScreen';
 import AdminScreen from '../screens/AdminScreen';
 import ManageItemsScreen from '../screens/ManageItemsScreen';
 import ManageBannersScreen from '../screens/ManageBannersScreen';
@@ -25,6 +26,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Gacha" component={GachaScreen} />
         <Stack.Screen name="Inventory" component={InventoryScreen} />
         <Stack.Screen name="Team" component={TeamScreen} />
+        <Stack.Screen name="TeamList" component={TeamListScreen} />
         <Stack.Screen name="Admin" component={AdminScreen} />
         <Stack.Screen name="ManageItems" component={ManageItemsScreen} />
         <Stack.Screen name="ManageBanners" component={ManageBannersScreen} />

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import api from '../services/api';
 
 import PixelSelect from '../components/PixelSelect';
 
 const ManageBannersScreen = () => {
   const [name, setName] = useState('');
-  const [type, setType] = useState('Standard');
+  const [type, setType] = useState('Event');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0]);
   const [imagePath, setImagePath] = useState('');
@@ -41,7 +41,7 @@ const ManageBannersScreen = () => {
       <PixelSelect 
         label="Type" 
         value={type} 
-        options={['Character', 'Weapon', 'Standard', 'Event']} 
+        options={['Character', 'Weapon', 'Artifact', 'Event']} 
         onSelect={setType} 
       />
 

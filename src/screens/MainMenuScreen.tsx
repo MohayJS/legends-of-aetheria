@@ -1,15 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Image, ScrollView, SafeAreaView, Modal } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import api, { BASE_URL } from '../services/api';
+import bannerImages from '../config/bannerImages';
 
 const MainMenuScreen = ({ navigation, route }: any) => {
   // Fallback for user if not passed correctly
-  const [user, setUser] = useState(route.params?.user || { name: 'BladeMaster', username: 'BladeMaster', level: 10, gems: 1500 });
+  const [user, setUser] = useState(route.params.user);
 
   useEffect(() => {
     if (route.params?.user) {
       setUser(route.params.user);
     }
   }, [route.params?.user]);
+
+  const fetchUserData = useCallback(async () => {
+    if (!user.player_id) return;
+    try {
+      const response = await api.get(`/player/${user.player_id}`);
+      setUser((prev: any) => ({ ...prev, ...response.data }));
+    } catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+  }, [user.player_id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [fetchUserData])
+  );
+
+  const [banners, setBanners] = useState<any[]>([]);
+  const [isBannerModalVisible, setBannerModalVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await api.get('/gacha/banners');
+        setBanners(response.data);
+      } catch (error) {
+        console.error('Failed to fetch banners:', error);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
+  const handleSummonPress = () => {
+    setBannerModalVisible(true);
+  };
+
+  const handleBannerSelect = (banner: any) => {
+    setBannerModalVisible(false);
+    navigation.navigate('Gacha', { banner, user });
+  };
 
   return (
     <ImageBackground 
@@ -32,9 +76,14 @@ const MainMenuScreen = ({ navigation, route }: any) => {
               <View style={styles.userInfo}>
                 <Text style={styles.username}>{user.name || user.username}</Text>
                 <View style={styles.levelContainer}>
-                  <Text style={styles.levelText}>Lvl {user.level || 10}</Text>
-                  <View style={styles.xpBarBackground}>
-                    <View style={[styles.xpBarFill, { width: '60%' }]} />
+                  <Text style={styles.levelText}>Lvl {user.level}</Text>
+                  <View style={{ flex: 1 }}>
+                    <View style={[styles.xpBarBackground, { flex: 0, width: '100%' }]}>
+                      <View style={[styles.xpBarFill, { width: `${Math.min(((user.xp) / ((user.level) * 100)) * 100, 100)}%` }]} />
+                    </View>
+                    <Text style={{ color: '#fff', fontSize: 9, fontFamily: 'monospace', textAlign: 'right', marginTop: 2 }}>
+                      {user.xp || 0}/{((user.level) * 100)} XP
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -57,29 +106,28 @@ const MainMenuScreen = ({ navigation, route }: any) => {
               style={styles.bannerScroll}
               contentContainerStyle={styles.bannerScrollContent}
             >
-              <View style={styles.bannerCard}>
-                <Image source={require('../../srcassets/banner_1.png')} style={styles.bannerImage} />
-                <View style={styles.bannerTextContainer}>
-                  <Text style={styles.bannerTitle}>Hero Summon Up!</Text>
-                  <Text style={styles.bannerSubtitle}>Ends in 3 days</Text>
-                </View>
-              </View>
-              
-              <View style={styles.bannerCard}>
-                <Image source={require('../../srcassets/banner_2.png')} style={styles.bannerImage} />
-                <View style={styles.bannerTextContainer}>
-                  <Text style={styles.bannerTitle}>The Dragon's Hoard</Text>
-                  <Text style={styles.bannerSubtitle}>New challenges await!</Text>
-                </View>
-              </View>
+              {banners.map((banner) => {
+                // Extract filename if path is provided (e.g. "srcassets/image.png" -> "image.png")
+                const filename = banner.image_path.split('/').pop();
+                const localImage = bannerImages[banner.image_path] || (filename ? bannerImages[filename] : null);
 
-              <View style={styles.bannerCard}>
-                <Image source={require('../../srcassets/banner_3.png')} style={styles.bannerImage} />
-                <View style={styles.bannerTextContainer}>
-                  <Text style={styles.bannerTitle}>Log-in Bonus!</Text>
-                  <Text style={styles.bannerSubtitle}>Claim your daily reward</Text>
-                </View>
-              </View>
+                return (
+                  <TouchableOpacity 
+                    key={banner.banner_id} 
+                    style={styles.bannerCard}
+                    onPress={() => navigation.navigate('Gacha', { banner, user })}
+                  >
+                    <Image 
+                      source={localImage || { uri: `${BASE_URL}/assets/${banner.image_path}` }} 
+                      style={styles.bannerImage} 
+                    />
+                    <View style={styles.bannerTextContainer}>
+                      <Text style={styles.bannerTitle}>{banner.name}</Text>
+                      <Text style={styles.bannerSubtitle}>Ends: {new Date(banner.end_date).toLocaleDateString()}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
             
             {/* Pagination Dots */}
@@ -99,8 +147,8 @@ const MainMenuScreen = ({ navigation, route }: any) => {
                 <Text style={styles.actionText}>BATTLE</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.actionButton, styles.summonButton]} onPress={() => navigation.navigate('Gacha')}>
-                <View style={styles.badge}><Text style={styles.badgeText}>!</Text></View>
+              <TouchableOpacity style={[styles.actionButton, styles.summonButton]} onPress={handleSummonPress}>
+                {/* <View style={styles.badge}><Text style={styles.badgeText}>!</Text></View> */}
                 <Text style={styles.actionIcon}>✨</Text>
                 <Text style={styles.actionText}>SUMMON</Text>
               </TouchableOpacity>
@@ -127,6 +175,46 @@ const MainMenuScreen = ({ navigation, route }: any) => {
               </TouchableOpacity>
             </View>
           </View>
+
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isBannerModalVisible}
+            onRequestClose={() => setBannerModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Select a Banner</Text>
+                <ScrollView contentContainerStyle={styles.modalScrollContent}>
+                  {banners.map((banner) => {
+                    const filename = banner.image_path.split('/').pop();
+                    const localImage = bannerImages[banner.image_path] || (filename ? bannerImages[filename] : null);
+                    return (
+                      <TouchableOpacity
+                        key={banner.banner_id}
+                        style={styles.modalBannerCard}
+                        onPress={() => handleBannerSelect(banner)}
+                      >
+                        <Image
+                          source={localImage || { uri: `${BASE_URL}/assets/${banner.image_path}` }}
+                          style={styles.modalBannerImage}
+                        />
+                        <View style={styles.modalBannerTextContainer}>
+                            <Text style={styles.modalBannerTitle}>{banner.name}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setBannerModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
 
         </View>
       </SafeAreaView>
@@ -205,6 +293,9 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#a413ec',
     borderRadius: 4,
+  },
+  xpBarFillWidth: {
+    width: '60%',
   },
   currencyContainer: {
     flexDirection: 'row',
@@ -371,6 +462,70 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     fontSize: 10,
     fontFamily: 'monospace',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#2d1b36',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    maxHeight: '80%',
+    borderWidth: 2,
+    borderColor: '#553267',
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalScrollContent: {
+    paddingBottom: 20,
+  },
+  modalBannerCard: {
+    marginBottom: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#553267',
+  },
+  modalBannerImage: {
+    width: '100%',
+    height: 120,
+    resizeMode: 'cover',
+  },
+  modalBannerTextContainer: {
+    padding: 8,
+    alignItems: 'center',
+  },
+  modalBannerTitle: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: 'monospace',
+    textAlign: 'center',
+  },
+  closeButton: {
+    backgroundColor: '#6d2828',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#b94747',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontFamily: 'monospace',
+    fontWeight: 'bold',
   },
 });
 
