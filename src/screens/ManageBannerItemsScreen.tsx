@@ -203,7 +203,7 @@ const ManageBannerItemsScreen = () => {
         <Text style={styles.stepTitle}>Step 2: Select Items</Text>
         
         <View style={styles.filterContainer}>
-          {['All', 'Weapon', 'Character', 'Artifact'].map(type => (
+          {['All', 'Weapon', 'Character', 'Equipment'].map(type => (
             <TouchableOpacity 
               key={type} 
               style={[styles.filterButton, filterType === type && styles.filterButtonActive]}

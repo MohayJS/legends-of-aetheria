@@ -39,8 +39,7 @@ const WelcomeScreen = ({ navigation }: any) => {
   const handleRegister = async () => {
     try {
       await api.post('/auth/register', { username, password, email, name });
-      Alert.alert('Success', 'Registration successful! Please login.');
-      setIsRegistering(false);
+      await handleLogin();
     } catch (error: any) {
       console.error('Registration Error:', error);
       Alert.alert('Registration Failed', getErrorMessage(error));

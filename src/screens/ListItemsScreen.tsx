@@ -20,7 +20,7 @@ const ListItemsScreen = () => {
       const response = await api.get('/admin/items');
       setItems(response.data);
     } catch (error: any) {
-      Alert.alert('Error', 'Failed to fetch items');
+      Alert.alert('Error', error.response?.data?.error || 'Failed to fetch items');
     } finally {
       setLoading(false);
     }
