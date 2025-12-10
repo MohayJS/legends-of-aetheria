@@ -14,6 +14,10 @@ const MainMenuScreen = ({ navigation, route }: any) => {
     }
   }, [route.params?.user]);
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const fetchUserData = useCallback(async () => {
     if (!user.player_id) return;
     try {

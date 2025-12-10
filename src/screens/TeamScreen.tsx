@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, TextInput, Alert } from 'react-native';
 import api, { BASE_URL } from '../services/api';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -11,6 +11,18 @@ const TeamScreen = () => {
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [teamName, setTeamName] = useState('My Team');
   const [selectedCharacterStats, setSelectedCharacterStats] = useState<any>(null);
+
+  const stats = useMemo(() => {
+    if (!selectedCharacterStats?.base_stats) return {};
+    if (typeof selectedCharacterStats.base_stats === 'string') {
+        try {
+            return JSON.parse(selectedCharacterStats.base_stats);
+        } catch {
+            return {};
+        }
+    }
+    return selectedCharacterStats.base_stats;
+  }, [selectedCharacterStats]);
 
   useEffect(() => {
     fetchInventory();
@@ -33,10 +45,10 @@ const TeamScreen = () => {
 
   const loadTeam = (loadedTeam: any) => {
     setTeamName(loadedTeam.name);
-    const newTeam = Array(5).fill(null);
+    const newTeam = Array(4).fill(null);
     if (loadedTeam.members) {
         loadedTeam.members.forEach((m: any) => {
-            if (m.slot_index >= 1 && m.slot_index <= 5) {
+            if (m.slot_index >= 1 && m.slot_index <= 4) {
                 newTeam[m.slot_index - 1] = m;
             }
         });
@@ -70,6 +82,7 @@ const TeamScreen = () => {
       
       newTeam[selectedSlot] = character;
       setTeam(newTeam);
+      console.log(character)
       setSelectedCharacterStats(character);
       setSelectedSlot(null);
     } else {
@@ -94,10 +107,10 @@ const TeamScreen = () => {
   };
 
   const handleAutoFill = () => {
-      // Simple auto fill: take first 5 characters not in team
+      // Simple auto fill: take first 4 characters not in team
       const newTeam = [...team];
       let invIndex = 0;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 4; i++) {
           if (!newTeam[i]) {
               while (invIndex < inventory.length) {
                   const char = inventory[invIndex];
@@ -172,19 +185,21 @@ const TeamScreen = () => {
             <View style={styles.statsGrid}>
                 <View style={styles.statItem}>
                     <Text style={styles.statLabel}>HP</Text>
-                    <Text style={styles.statValue}>2400 / 2400</Text>
+                    <Text style={styles.statValue}>
+                        {stats.hp || 0} / {stats.hp || 0}
+                    </Text>
                 </View>
                 <View style={styles.statItem}>
                     <Text style={styles.statLabel}>ATK</Text>
-                    <Text style={styles.statValue}>850</Text>
+                    <Text style={styles.statValue}>{stats.atk || 0}</Text>
                 </View>
                 <View style={styles.statItem}>
                     <Text style={styles.statLabel}>DEF</Text>
-                    <Text style={styles.statValue}>620</Text>
+                    <Text style={styles.statValue}>{stats.def || 0}</Text>
                 </View>
                 <View style={styles.statItem}>
                     <Text style={styles.statLabel}>SPD</Text>
-                    <Text style={styles.statValue}>450</Text>
+                    <Text style={styles.statValue}>{stats.spd || 0}</Text>
                 </View>
             </View>
           </View>
