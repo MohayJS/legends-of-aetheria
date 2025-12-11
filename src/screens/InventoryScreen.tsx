@@ -1,20 +1,23 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import api, { BASE_URL } from '../services/api';
 
 const InventoryScreen = () => {
+  const navigation = useNavigation<any>();
+  const route = useRoute();
+  const { user } = (route.params as { user: any }) || {};
   const [inventory, setInventory] = useState<any[]>([]);
   const [selectedTab, setSelectedTab] = useState('Heroes'); // Heroes, Weapons, Items
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   useEffect(() => {
     fetchInventory();
-  }, []);
+  }, [user]);
 
   const fetchInventory = async () => {
     try {
-      const playerId = 5; // Hardcoded for MVP
-      const response = await api.get(`/inventory/${playerId}`);
+      const response = await api.get(`/inventory/${user.id}`);
       setInventory(response.data);
     } catch (error) {
       console.error(error);

@@ -6,11 +6,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const TeamScreen = () => {
   const route = useRoute();
   const navigation = useNavigation<any>();
+  const { user } = (route.params as { user: any }) || {};
   const [team, setTeam] = useState<any[]>(Array(4).fill(null));
   const [inventory, setInventory] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [teamName, setTeamName] = useState('My Team');
   const [selectedCharacterStats, setSelectedCharacterStats] = useState<any>(null);
+  console.log(user)
 
   const stats = useMemo(() => {
     if (!selectedCharacterStats?.base_stats) return {};
@@ -30,12 +32,12 @@ const TeamScreen = () => {
     if (params?.team) {
       loadTeam(params.team);
     }
-  }, [route.params]);
+  }, []);
 
   const fetchInventory = async () => {
+    if (!user?.id) return;
     try {
-      const playerId = 1;
-      const invRes = await api.get(`/inventory/${playerId}`);
+      const invRes = await api.get(`/inventory/${user.id}`);
       const characters = invRes.data.filter((i: any) => i.type === 'Character');
       setInventory(characters);
     } catch (error) {

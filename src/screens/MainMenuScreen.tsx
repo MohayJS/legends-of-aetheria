@@ -146,7 +146,7 @@ const MainMenuScreen = ({ navigation, route }: any) => {
           <View style={styles.footer}>
             {/* Primary Actions */}
             <View style={styles.primaryActions}>
-              <TouchableOpacity style={[styles.actionButton, styles.battleButton]} onPress={() => navigation.navigate('Team')}>
+              <TouchableOpacity style={[styles.actionButton, styles.battleButton]} onPress={() => navigation.navigate('Team', { user })}>
                 <Text style={styles.actionIcon}>⚔️</Text>
                 <Text style={styles.actionText}>BATTLE</Text>
               </TouchableOpacity>
@@ -157,7 +157,7 @@ const MainMenuScreen = ({ navigation, route }: any) => {
                 <Text style={styles.actionText}>SUMMON</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.actionButton, styles.inventoryButton]} onPress={() => navigation.navigate('Inventory')}>
+              <TouchableOpacity style={[styles.actionButton, styles.inventoryButton]} onPress={() => navigation.navigate('Inventory', { user })}>
                 <Text style={styles.actionIcon}>🎒</Text>
                 <Text style={styles.actionText}>INVENTORY</Text>
               </TouchableOpacity>
